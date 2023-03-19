@@ -129,7 +129,7 @@ The docker container for the manager uses two volumes, one for the database, one
 <table border="1" id="bkmrk-name-default-usage-a" style="border-collapse: collapse; width: 100%; border-width: 1px; height: 275.8px;"><colgroup><col style="width: 29.5426%;"></col><col style="width: 20.3006%;"></col><col style="width: 50.1567%;"></col></colgroup><tbody><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">Name  
 </td><td style="border-width: 1px; height: 29.8px;">Default  
 </td><td style="border-width: 1px; height: 29.8px;">Usage  
-</td></tr><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">ALLOWED_HOSTS</td><td style="border-width: 1px; height: 29.8px;">\['*']</td><td style="border-width: 1px; height: 29.8px;">Django's list of allowed hosts  
+</td></tr><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">ALLOWED_HOSTS</td><td style="border-width: 1px; height: 29.8px;">['*']</td><td style="border-width: 1px; height: 29.8px;">Django's list of allowed hosts  
 </td></tr><tr style="height: 63.4px;"><td style="border-width: 1px; height: 63.4px;">TIME_ZONE</td><td style="border-width: 1px; height: 63.4px;">UTC  
 </td><td style="border-width: 1px; height: 63.4px;">Timezone to use for Django
 
