@@ -129,7 +129,7 @@ The docker container for the manager uses two volumes, one for the database, one
 <table border="1" id="bkmrk-name-default-usage-a" style="border-collapse: collapse; width: 100%; border-width: 1px; height: 275.8px;"><colgroup><col style="width: 29.5426%;"></col><col style="width: 20.3006%;"></col><col style="width: 50.1567%;"></col></colgroup><tbody><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">Name  
 </td><td style="border-width: 1px; height: 29.8px;">Default  
 </td><td style="border-width: 1px; height: 29.8px;">Usage  
-</td></tr><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">ALLOWED_HOSTS</td><td style="border-width: 1px; height: 29.8px;">\['\*'\]</td><td style="border-width: 1px; height: 29.8px;">Django's list of allowed hosts  
+</td></tr><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">ALLOWED_HOSTS</td><td style="border-width: 1px; height: 29.8px;">\['*']</td><td style="border-width: 1px; height: 29.8px;">Django's list of allowed hosts  
 </td></tr><tr style="height: 63.4px;"><td style="border-width: 1px; height: 63.4px;">TIME_ZONE</td><td style="border-width: 1px; height: 63.4px;">UTC  
 </td><td style="border-width: 1px; height: 63.4px;">Timezone to use for Django
 
@@ -147,7 +147,7 @@ The docker container for the manager uses two volumes, one for the database, one
 </td><td style="border-width: 1px;">Used during M3U and EPG generation for icon URL prefixes</td></tr><tr><td style="border-width: 1px;">INTERNAL_MANAGEMENT_PORT</td><td style="border-width: 1px;">8088  
 </td><td style="border-width: 1px;">Used for the socket setup</td></tr><tr><td style="border-width: 1px;">EXTERNAL_MANAGEMENT_PORT</td><td style="border-width: 1px;">8088  
 </td><td style="border-width: 1px;">Used during M3U and EPG generation for icon URL prefixes</td></tr><tr><td style="border-width: 1px;">INTERNAL_TIMEOUT</td><td style="border-width: 1px;">1  
-</td><td style="border-width: 1px;">Timeout in seconds for internal control connections</td></tr><tr><td style="border-width: 1px;">USER_AGENT_STRING</td><td style="border-width: 1px;">Mozilla/5.0 (Macintosh; Intel Mac OS X 10\_11\_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36)</td><td style="border-width: 1px;">The User Agent string to use for communication to upstream playlist, epg and icon urls</td></tr><tr><td style="border-width: 1px;">PLAYLIST_TIMEOUT</td><td style="border-width: 1px;">120  
+</td><td style="border-width: 1px;">Timeout in seconds for internal control connections</td></tr><tr><td style="border-width: 1px;">USER_AGENT_STRING</td><td style="border-width: 1px;">Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36)</td><td style="border-width: 1px;">The User Agent string to use for communication to upstream playlist, epg and icon urls</td></tr><tr><td style="border-width: 1px;">PLAYLIST_TIMEOUT</td><td style="border-width: 1px;">120  
 </td><td style="border-width: 1px;">Download timeout for playlist files  
 </td></tr><tr><td style="border-width: 1px;">EPG_TIMEOUT</td><td style="border-width: 1px;">120  
 </td><td style="border-width: 1px;">Download timeout for EPG files  
