@@ -1,0 +1,51 @@
+version: "3"
+
+services:
+  manager:
+    build:
+      context: ./manager  
+    container_name: "IPTV-Manager"
+    image: iptv-manager
+    volumes:
+      - ./volumes/static/:/app/staticfiles/
+      - ./volumes/database/:/app/database/
+    environment:
+    # - ALLOWED_HOSTS: "['*']"    
+    # - TIME_ZONE=UTC
+    # - DJANGO_SUPERUSER_USERNAME=admin
+    # - DJANGO_SUPERUSER_EMAIL=admin@admin.com
+    # - DJANGO_SUPERUSER_PASSWORD=password
+    # - SECRET_KEY=
+    # - DEBUG=False
+    # - SOCKET_ADDRESS="0.0.0.0"
+    # - MANAGEMENT_URL=http://myhost.mydomain.net
+    # - INTERNAL_MANAGEMENT_PORT=8088
+    # - EXTERNAL_MANAGEMENT_PORT=8088
+    # - INTERNAL_TIMEOUT=1
+    # - USER_AGENT_STRING="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36)"
+    # - PLAYLIST_TIMEOUT=120
+    # - EPG_TIMEOUT=120
+    # - ICON_TIMEOUT=15
+    restart: unless-stopped
+      
+  proxy:
+    build:
+      context: ./proxy/
+    container_name: "IPTV-Server"
+    image: iptv-proxy
+    #environment:
+    # - DEBUG=False
+    # - SOCKET_ADDRESS=0.0.0.0
+    # - REPORTING_URL=http://localhost
+    # - REPORTING_PORT=8088
+    # - REPORTING_TIMEOUT=5
+    # - PROXY_NAME=IPTV-Proxy
+    # - INTERNAL_PROXY_URL=http://localhost
+    # - INTERNAL_PROXY_PORT=8089
+    # - EXTERNAL_PROXY_URL=http://localhost
+    # - EXTERNAL_PROXY_PORT=8089
+    # - USER_AGENT_STRING=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36)
+    # - STREAM_TIMEOUT=15
+    links:
+      - manager
+    restart: unless-stopped
