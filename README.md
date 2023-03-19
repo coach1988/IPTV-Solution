@@ -129,29 +129,29 @@ The docker container for the manager uses two volumes, one for the database, one
 <table border="1" id="bkmrk-name-default-usage-a" style="border-collapse: collapse; width: 100%; border-width: 1px; height: 275.8px;"><colgroup><col style="width: 29.5426%;"></col><col style="width: 20.3006%;"></col><col style="width: 50.1567%;"></col></colgroup><tbody><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">Name  
 </td><td style="border-width: 1px; height: 29.8px;">Default  
 </td><td style="border-width: 1px; height: 29.8px;">Usage  
-</td></tr><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">ALLOWED\_HOSTS</td><td style="border-width: 1px; height: 29.8px;">\['\*'\]</td><td style="border-width: 1px; height: 29.8px;">Django's list of allowed hosts  
-</td></tr><tr style="height: 63.4px;"><td style="border-width: 1px; height: 63.4px;">TIME\_ZONE</td><td style="border-width: 1px; height: 63.4px;">UTC  
+</td></tr><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">ALLOWED_HOSTS</td><td style="border-width: 1px; height: 29.8px;">\['\*'\]</td><td style="border-width: 1px; height: 29.8px;">Django's list of allowed hosts  
+</td></tr><tr style="height: 63.4px;"><td style="border-width: 1px; height: 63.4px;">TIME_ZONE</td><td style="border-width: 1px; height: 63.4px;">UTC  
 </td><td style="border-width: 1px; height: 63.4px;">Timezone to use for Django
 
 (see [https://en.wikipedia.org/wiki/List\_of\_tz\_database\_time\_zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones))
 
-</td></tr><tr style="height: 46.6px;"><td style="border-width: 1px; height: 46.6px;">DJANGO\_SUPERUSER\_USERNAME</td><td style="border-width: 1px; height: 46.6px;">admin</td><td style="border-width: 1px; height: 46.6px;">Default admin login  
-</td></tr><tr style="height: 46.6px;"><td style="border-width: 1px; height: 46.6px;">DJANGO\_SUPERUSER\_EMAIL</td><td style="border-width: 1px; height: 46.6px;">admin@admin.com</td><td style="border-width: 1px; height: 46.6px;">Default admin email address  
-</td></tr><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">DJANGO\_SUPERUSER\_PASSWORD</td><td style="border-width: 1px; height: 29.8px;">password  
+</td></tr><tr style="height: 46.6px;"><td style="border-width: 1px; height: 46.6px;">DJANGO_SUPERUSER_USERNAME</td><td style="border-width: 1px; height: 46.6px;">admin</td><td style="border-width: 1px; height: 46.6px;">Default admin login  
+</td></tr><tr style="height: 46.6px;"><td style="border-width: 1px; height: 46.6px;">DJANGO_SUPERUSER_EMAIL</td><td style="border-width: 1px; height: 46.6px;">admin@admin.com</td><td style="border-width: 1px; height: 46.6px;">Default admin email address  
+</td></tr><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">DJANGO_SUPERUSER_PASSWORD</td><td style="border-width: 1px; height: 29.8px;">password  
 </td><td style="border-width: 1px; height: 29.8px;">Default admin password  
-</td></tr><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">SECRET\_KEY</td><td style="border-width: 1px; height: 29.8px;">  
+</td></tr><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">SECRET_KEY</td><td style="border-width: 1px; height: 29.8px;">  
 </td><td style="border-width: 1px; height: 29.8px;">Django's secret key</td></tr><tr><td style="border-width: 1px;">DEBUG</td><td style="border-width: 1px;">False  
 </td><td style="border-width: 1px;">Enable Django debugging  
-</td></tr><tr><td style="border-width: 1px;">SOCKET\_ADDRESS</td><td style="border-width: 1px;">0.0.0.0  
-</td><td style="border-width: 1px;">The IP to bind the socket to</td></tr><tr><td style="border-width: 1px;">MANAGEMENT\_URL</td><td style="border-width: 1px;">  
-</td><td style="border-width: 1px;">Used during M3U and EPG generation for icon URL prefixes</td></tr><tr><td style="border-width: 1px;">INTERNAL\_MANAGEMENT\_PORT</td><td style="border-width: 1px;">8088  
-</td><td style="border-width: 1px;">Used for the socket setup</td></tr><tr><td style="border-width: 1px;">EXTERNAL\_MANAGEMENT\_PORT</td><td style="border-width: 1px;">8088  
-</td><td style="border-width: 1px;">Used during M3U and EPG generation for icon URL prefixes</td></tr><tr><td style="border-width: 1px;">INTERNAL\_TIMEOUT</td><td style="border-width: 1px;">1  
-</td><td style="border-width: 1px;">Timeout in seconds for internal control connections</td></tr><tr><td style="border-width: 1px;">USER\_AGENT\_STRING</td><td style="border-width: 1px;">Mozilla/5.0 (Macintosh; Intel Mac OS X 10\_11\_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36)</td><td style="border-width: 1px;">The User Agent string to use for communication to upstream playlist, epg and icon urls</td></tr><tr><td style="border-width: 1px;">PLAYLIST\_TIMEOUT</td><td style="border-width: 1px;">120  
+</td></tr><tr><td style="border-width: 1px;">SOCKET_ADDRESS</td><td style="border-width: 1px;">0.0.0.0  
+</td><td style="border-width: 1px;">The IP to bind the socket to</td></tr><tr><td style="border-width: 1px;">MANAGEMENT_URL</td><td style="border-width: 1px;">  
+</td><td style="border-width: 1px;">Used during M3U and EPG generation for icon URL prefixes</td></tr><tr><td style="border-width: 1px;">INTERNAL_MANAGEMENT_PORT</td><td style="border-width: 1px;">8088  
+</td><td style="border-width: 1px;">Used for the socket setup</td></tr><tr><td style="border-width: 1px;">EXTERNAL_MANAGEMENT_PORT</td><td style="border-width: 1px;">8088  
+</td><td style="border-width: 1px;">Used during M3U and EPG generation for icon URL prefixes</td></tr><tr><td style="border-width: 1px;">INTERNAL_TIMEOUT</td><td style="border-width: 1px;">1  
+</td><td style="border-width: 1px;">Timeout in seconds for internal control connections</td></tr><tr><td style="border-width: 1px;">USER_AGENT_STRING</td><td style="border-width: 1px;">Mozilla/5.0 (Macintosh; Intel Mac OS X 10\_11\_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36)</td><td style="border-width: 1px;">The User Agent string to use for communication to upstream playlist, epg and icon urls</td></tr><tr><td style="border-width: 1px;">PLAYLIST_TIMEOUT</td><td style="border-width: 1px;">120  
 </td><td style="border-width: 1px;">Download timeout for playlist files  
-</td></tr><tr><td style="border-width: 1px;">EPG\_TIMEOUT</td><td style="border-width: 1px;">120  
+</td></tr><tr><td style="border-width: 1px;">EPG_TIMEOUT</td><td style="border-width: 1px;">120  
 </td><td style="border-width: 1px;">Download timeout for EPG files  
-</td></tr><tr><td style="border-width: 1px;">ICON\_TIMEOUT</td><td style="border-width: 1px;">15  
+</td></tr><tr><td style="border-width: 1px;">ICON_TIMEOUT</td><td style="border-width: 1px;">15  
 </td><td style="border-width: 1px;">Download timeout for icon files  
 </td></tr></tbody></table>
 
@@ -163,11 +163,11 @@ The docker container for the manager uses two volumes, one for the database, one
 </td></tr><tr><td>DEBUG  
 </td><td>False  
 </td><td>Flask debugging  
-</td></tr><tr><td>SOCKET\_ADDRESS</td><td>0.0.0.0  
-</td><td>Streaming proxy server's IP to bind the socket to</td></tr><tr><td>REPORTING\_URL</td><td>http://localhost</td><td>Reporting (Management) server URL</td></tr><tr><td>REPORTING\_PORT</td><td>8088  
-</td><td>Reporting service port</td></tr><tr><td>REPORTING\_TIMEOUT</td><td>5  
-</td><td>Used for reporting connections</td></tr><tr><td>PROXY\_NAME</td><td>IPTV-Proxy  
-</td><td>Name to use when registering with the management server</td></tr><tr><td>INTERNAL\_PROXY\_URL</td><td>http://localhost</td><td>Internal URL to use when registering with the management server (to receive connection control/drop requests from the server) </td></tr><tr><td>INTERNAL\_PROXY\_PORT</td><td>8089  
-</td><td>Internal port to use when registering with the management server (to receive connection control/drop requests from the server)</td></tr><tr><td>EXTERNAL\_PROXY\_URL</td><td>http://localhost</td><td>External URL to use when registering with the management server (for URL's inside of playlists and EPG's)</td></tr><tr><td>EXTERNAL\_PROXY\_PORT</td><td>8089  
-</td><td>External port to use when registering with the management server (for URL's inside of playlists and EPG's)</td></tr><tr><td>USER\_AGENT\_STRING</td><td>Mozilla/5.0 (Macintosh; Intel Mac OS X 10\_11\_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36)</td><td>Defines the User Agent string to use for communication to upstream playlist, epg and icon urls</td></tr><tr><td>STREAM\_TIMEOUT</td><td>15  
+</td></tr><tr><td>SOCKET_ADDRESS</td><td>0.0.0.0  
+</td><td>Streaming proxy server's IP to bind the socket to</td></tr><tr><td>REPORTING_URL</td><td>http://localhost</td><td>Reporting (Management) server URL</td></tr><tr><td>REPORTING_PORT</td><td>8088  
+</td><td>Reporting service port</td></tr><tr><td>REPORTING_TIMEOUT</td><td>5  
+</td><td>Used for reporting connections</td></tr><tr><td>PROXY_NAME</td><td>IPTV-Proxy  
+</td><td>Name to use when registering with the management server</td></tr><tr><td>INTERNAL_PROXY_URL</td><td>http://localhost</td><td>Internal URL to use when registering with the management server (to receive connection control/drop requests from the server) </td></tr><tr><td>INTERNAL_PROXY_PORT</td><td>8089  
+</td><td>Internal port to use when registering with the management server (to receive connection control/drop requests from the server)</td></tr><tr><td>EXTERNAL_PROXY_URL</td><td>http://localhost</td><td>External URL to use when registering with the management server (for URL's inside of playlists and EPG's)</td></tr><tr><td>EXTERNAL_PROXY_PORT</td><td>8089  
+</td><td>External port to use when registering with the management server (for URL's inside of playlists and EPG's)</td></tr><tr><td>USER_AGENT_STRING</td><td>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36)</td><td>Defines the User Agent string to use for communication to upstream playlist, epg and icon urls</td></tr><tr><td>STREAM_TIMEOUT</td><td>15  
 </td><td>Seconds before connections to upstream sources time out and a server error is reported to the client </td></tr></tbody></table>
