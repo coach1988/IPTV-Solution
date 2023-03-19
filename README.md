@@ -1,0 +1,173 @@
+# IPTV-Solution
+
+## What is it?
+
+A Django-based web-UI to manage IPTV streaming playlists (M3U) + EPG's (XMLTV), upstream and downstream. It is basically my first Django project and it is one of only few of my projects that have a real use and that others get to see, so please bear with me if the code is not very pythonic;-)
+
+PS: Yes, the name is not very creative.
+
+## Features:
+
+- [x] Fully responsive web UI
+- [x] Multi-Client/Playlist/Proxy
+- [x] Complete docker-compose stack
+- [x] Distributed architecture
+- [x] (Basic) Session handling
+- [x] Channel icon cache and management
+
+## How does it work?
+
+The setup currently works like this:
+
+1. You define upstream user agents; These strings will be sent to upstream servers when downloading files
+2. You define upstream playlists; These can origin from local files or a http(s) URL's. They use the user agents defined in the first step and can be further filtered before their channels and icons will be imported. 
+    - The filters apply to the "group-title" attribute within M3U files and filter out all channels that belong to groups with these names (one group per line)
+3. You define upstream proxy servers: These have an internal and external URL and port. If you are hosting the management server and the streaming proxy on the same host, you will leave the internal URL's pointing to the localhost and the default port, unless you've changed these settings. The external URL and port should match the URL's of the proxy servers and their ports. 
+    - The information you're using for the internal network connection will be used only by the management server to connect to the proxy in case you want to drop a running streaming session
+    - The information for the external network connection will be inserted as a proxy for URL-entries in M3U's and XML's (for EPG's)
+4. You define downstream playlists; These will be assigned an upstream proxy created in the third step and will be dynamically assembled from the groups you enter here 
+    - Tip: There is a "Get group list" button on the top right of the group admin page that returns all known groups as a text to copy &amp; paste
+    - You can eventually also filter out further channels based on their names
+5. (Optional): Define upstream EPG's: You can proxy local or remote XMLTV files
+
+Each defined downstream playlist and each EPG is available via individual URL's.
+
+It is meant to allow you to import the set of channel groups you are interested from your upstream, leaving out all the groups that you don't want anyways. You then define a playlist for each one of your clients by defining a set of channel groups they will receive. If these groups still contain individual channels you don't want them to receive, you can filter them out.
+
+## URL's and login
+
+(Adjust the hostname, port and URI scheme according to your settings)
+
+Web admin UI (default username: **admin**, default password: **password**)
+
+```
+http://localhost:8088/admin
+```
+
+URL for EPG (replace "&lt;name&gt;" with your EPG's name)
+
+```
+http://localhost:8088/manager/get/epg/<name>
+```
+
+URL for downstream playlist (replace "&lt;name&gt;" with your playlist's name)
+
+```
+http://localhost:8088/manager/get/playlist/<name>
+```
+
+## Known issues
+
+- Code quality: I am no coder, especially not for Django. Expect a lot of dirty code. But waht can i say? It works for me;)
+- Encodings: I am bad at encodings, I am bad at http-headers and I am bad at writing files; I am sure that you will run into issues with more exotic characters and encodings
+- Security: I am aware of a lot of conceptual security issues; This solution was designed to be deployed inhouse for my wife (and no, she would not know how to spoof anything or get around the firewall)
+- Webserver: Right now, everything is based on the Django's and Flask's webservers; I would like to give interested parties at least the option to deploy this solution with their own webservers, but I don't know enough about WSGI and ASGI for that yet
+- Dropping of sessions currently only works from the overview, but not from a session's details page 
+    - It can also take ~30 seconds before the stream stalls
+- Many more (especially as I have only one concurrent upstream connection to test with)
+- Mean exceptions when dropping a stream;)
+
+## Why Django's and Flask's webserver?
+
+I wanted to use Django as a management UI once i learned about it and I had this plan for a rewrite of a proxy for a long time. I unfortunately had to find out that Django is not really streaming friendly, so I had to fall back to Flask for that. But hey, at laest we've gained support for distributed setups:)
+
+## To do's
+
+- It is far from complete
+- Overwrite handling: Allow for a convenient way to replace things such as channel name, channel groups, etc.
+- Service files: Ship it with some systemd units
+- User session limits: Implement some enforcement of concurrency limits for upstream playlists
+
+## How to run
+
+<details id="bkmrk-docker-compose-clone"><summary>docker-compose</summary>
+
+1. Clone the git repository:  
+    ```
+    git clone https://github.com/coach1988/iptv-solution.git
+    ```
+2. Edit the docker-compose.yml with the editor of your choice
+3. Build the docker images  
+    ```
+    docker-compose build
+    ```
+4. Run the stack  
+    ```
+    docker-compose up -d
+    ```
+
+The docker container for the manager uses two volumes, one for the database, one for static files (icons, epg and playlists).
+
+</details><details id="bkmrk-local-execution-clon"><summary>Local execution</summary>
+
+1. Clone the git repository:  
+    ```
+    git clone https://github.com/coach1988/iptv-solution.git
+    ```
+2. Edit the proxy.env and manager.env with the editor of your choice
+3. Create a venv for, activate it and install the requirements (for both programs)  
+    ```
+    python3 -m venv venv
+    source venv/bin/activate
+    python3 -m pip install -r requirements.txt
+    ```
+4. Run the manager process  
+    ```
+    manager/run_local.sh
+    ```
+5. Run the proxy process  
+    ```
+    proxy/run_local.sh
+    ```
+
+</details>
+
+## Variables
+
+#### Manager
+
+<table border="1" id="bkmrk-name-default-usage-a" style="border-collapse: collapse; width: 100%; border-width: 1px; height: 275.8px;"><colgroup><col style="width: 29.5426%;"></col><col style="width: 20.3006%;"></col><col style="width: 50.1567%;"></col></colgroup><tbody><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">Name  
+</td><td style="border-width: 1px; height: 29.8px;">Default  
+</td><td style="border-width: 1px; height: 29.8px;">Usage  
+</td></tr><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">ALLOWED\_HOSTS</td><td style="border-width: 1px; height: 29.8px;">\['\*'\]</td><td style="border-width: 1px; height: 29.8px;">Django's list of allowed hosts  
+</td></tr><tr style="height: 63.4px;"><td style="border-width: 1px; height: 63.4px;">TIME\_ZONE</td><td style="border-width: 1px; height: 63.4px;">UTC  
+</td><td style="border-width: 1px; height: 63.4px;">Timezone to use for Django
+
+(see [https://en.wikipedia.org/wiki/List\_of\_tz\_database\_time\_zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones))
+
+</td></tr><tr style="height: 46.6px;"><td style="border-width: 1px; height: 46.6px;">DJANGO\_SUPERUSER\_USERNAME</td><td style="border-width: 1px; height: 46.6px;">admin</td><td style="border-width: 1px; height: 46.6px;">Default admin login  
+</td></tr><tr style="height: 46.6px;"><td style="border-width: 1px; height: 46.6px;">DJANGO\_SUPERUSER\_EMAIL</td><td style="border-width: 1px; height: 46.6px;">admin@admin.com</td><td style="border-width: 1px; height: 46.6px;">Default admin email address  
+</td></tr><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">DJANGO\_SUPERUSER\_PASSWORD</td><td style="border-width: 1px; height: 29.8px;">password  
+</td><td style="border-width: 1px; height: 29.8px;">Default admin password  
+</td></tr><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">SECRET\_KEY</td><td style="border-width: 1px; height: 29.8px;">  
+</td><td style="border-width: 1px; height: 29.8px;">Django's secret key</td></tr><tr><td style="border-width: 1px;">DEBUG</td><td style="border-width: 1px;">False  
+</td><td style="border-width: 1px;">Enable Django debugging  
+</td></tr><tr><td style="border-width: 1px;">SOCKET\_ADDRESS</td><td style="border-width: 1px;">0.0.0.0  
+</td><td style="border-width: 1px;">The IP to bind the socket to</td></tr><tr><td style="border-width: 1px;">MANAGEMENT\_URL</td><td style="border-width: 1px;">  
+</td><td style="border-width: 1px;">Used during M3U and EPG generation for icon URL prefixes</td></tr><tr><td style="border-width: 1px;">INTERNAL\_MANAGEMENT\_PORT</td><td style="border-width: 1px;">8088  
+</td><td style="border-width: 1px;">Used for the socket setup</td></tr><tr><td style="border-width: 1px;">EXTERNAL\_MANAGEMENT\_PORT</td><td style="border-width: 1px;">8088  
+</td><td style="border-width: 1px;">Used during M3U and EPG generation for icon URL prefixes</td></tr><tr><td style="border-width: 1px;">INTERNAL\_TIMEOUT</td><td style="border-width: 1px;">1  
+</td><td style="border-width: 1px;">Timeout in seconds for internal control connections</td></tr><tr><td style="border-width: 1px;">USER\_AGENT\_STRING</td><td style="border-width: 1px;">Mozilla/5.0 (Macintosh; Intel Mac OS X 10\_11\_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36)</td><td style="border-width: 1px;">The User Agent string to use for communication to upstream playlist, epg and icon urls</td></tr><tr><td style="border-width: 1px;">PLAYLIST\_TIMEOUT</td><td style="border-width: 1px;">120  
+</td><td style="border-width: 1px;">Download timeout for playlist files  
+</td></tr><tr><td style="border-width: 1px;">EPG\_TIMEOUT</td><td style="border-width: 1px;">120  
+</td><td style="border-width: 1px;">Download timeout for EPG files  
+</td></tr><tr><td style="border-width: 1px;">ICON\_TIMEOUT</td><td style="border-width: 1px;">15  
+</td><td style="border-width: 1px;">Download timeout for icon files  
+</td></tr></tbody></table>
+
+#### Proxy
+
+<table border="1" id="bkmrk-name-default-usage-d" style="border-collapse: collapse; width: 100%;"><colgroup><col style="width: 22.9913%;"></col><col style="width: 27.6763%;"></col><col style="width: 49.3324%;"></col></colgroup><tbody><tr><td>Name  
+</td><td>Default  
+</td><td>Usage  
+</td></tr><tr><td>DEBUG  
+</td><td>False  
+</td><td>Flask debugging  
+</td></tr><tr><td>SOCKET\_ADDRESS</td><td>0.0.0.0  
+</td><td>Streaming proxy server's IP to bind the socket to</td></tr><tr><td>REPORTING\_URL</td><td>http://localhost</td><td>Reporting (Management) server URL</td></tr><tr><td>REPORTING\_PORT</td><td>8088  
+</td><td>Reporting service port</td></tr><tr><td>REPORTING\_TIMEOUT</td><td>5  
+</td><td>Used for reporting connections</td></tr><tr><td>PROXY\_NAME</td><td>IPTV-Proxy  
+</td><td>Name to use when registering with the management server</td></tr><tr><td>INTERNAL\_PROXY\_URL</td><td>http://localhost</td><td>Internal URL to use when registering with the management server (to receive connection control/drop requests from the server) </td></tr><tr><td>INTERNAL\_PROXY\_PORT</td><td>8089  
+</td><td>Internal port to use when registering with the management server (to receive connection control/drop requests from the server)</td></tr><tr><td>EXTERNAL\_PROXY\_URL</td><td>http://localhost</td><td>External URL to use when registering with the management server (for URL's inside of playlists and EPG's)</td></tr><tr><td>EXTERNAL\_PROXY\_PORT</td><td>8089  
+</td><td>External port to use when registering with the management server (for URL's inside of playlists and EPG's)</td></tr><tr><td>USER\_AGENT\_STRING</td><td>Mozilla/5.0 (Macintosh; Intel Mac OS X 10\_11\_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36)</td><td>Defines the User Agent string to use for communication to upstream playlist, epg and icon urls</td></tr><tr><td>STREAM\_TIMEOUT</td><td>15  
+</td><td>Seconds before connections to upstream sources time out and a server error is reported to the client </td></tr></tbody></table>
