@@ -141,7 +141,7 @@ The docker container for the manager uses two volumes, one for the database, one
 </td><td style="border-width: 1px; height: 29.8px;">Default admin password  
 </td></tr><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">SECRET_KEY</td><td style="border-width: 1px; height: 29.8px;">  
 </td><td style="border-width: 1px; height: 29.8px;">Django's secret key</td></tr><tr><td style="border-width: 1px;">DEBUG</td><td style="border-width: 1px;">False  
-</td><td style="border-width: 1px;">Enable Django debugging  
+</td><td style="border-width: 1px;">Enable Django debugging; <strong>Should be set to "True" unless you want to deal with the static file management</strong>
 </td></tr><tr><td style="border-width: 1px;">SOCKET_ADDRESS</td><td style="border-width: 1px;">0.0.0.0  
 </td><td style="border-width: 1px;">The IP to bind the socket to</td></tr><tr><td style="border-width: 1px;">MANAGEMENT_URL</td><td style="border-width: 1px;">  
 </td><td style="border-width: 1px;">Used during M3U and EPG generation for icon URL prefixes</td></tr><tr><td style="border-width: 1px;">INTERNAL_MANAGEMENT_PORT</td><td style="border-width: 1px;">8088  
