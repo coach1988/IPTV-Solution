@@ -84,7 +84,7 @@ I wanted to use Django as a management UI once i learned about it and I had this
 
 1. Clone the git repository:  
     ```
-    git clone https://github.com/coach1988/iptv-solution.git
+    git clone https://github.com/coach1988/IPTV-Solution.git
     ```
 2. Edit the docker-compose.yml with the editor of your choice
 3. Build the docker images  
@@ -102,7 +102,7 @@ The docker container for the manager uses two volumes, one for the database, one
 
 1. Clone the git repository:  
     ```
-    git clone https://github.com/coach1988/iptv-solution.git
+    git clone https://github.com/coach1988/IPTV-Solution.git
     ```
 2. Edit the proxy.env and manager.env with the editor of your choice
 3. Create a venv for, activate it and install the requirements (for both programs)  
