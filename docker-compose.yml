@@ -6,6 +6,8 @@ services:
       context: ./manager  
     container_name: "IPTV-Manager"
     image: iptv-manager
+    ports:
+      - 8088:8088/tcp
     volumes:
       - ./volumes/static/:/app/staticfiles/
       - ./volumes/database/:/app/database/
@@ -15,10 +17,10 @@ services:
     # - DJANGO_SUPERUSER_USERNAME=admin
     # - DJANGO_SUPERUSER_EMAIL=admin@admin.com
     # - DJANGO_SUPERUSER_PASSWORD=password
-    # - SECRET_KEY=
-    # - DEBUG=False
+      - SECRET_KEY=
+    # - DEBUG=True
     # - SOCKET_ADDRESS="0.0.0.0"
-    # - MANAGEMENT_URL=http://myhost.mydomain.net
+    # - MANAGEMENT_URL=http://localhost
     # - INTERNAL_MANAGEMENT_PORT=8088
     # - EXTERNAL_MANAGEMENT_PORT=8088
     # - INTERNAL_TIMEOUT=1
@@ -31,16 +33,18 @@ services:
   proxy:
     build:
       context: ./proxy/
-    container_name: "IPTV-Server"
+    container_name: "IPTV-Proxy"
     image: iptv-proxy
-    #environment:
-    # - DEBUG=False
+    ports:
+      - 8089:8089/tcp
+    environment:
+    # - DEBUG=True
     # - SOCKET_ADDRESS=0.0.0.0
-    # - REPORTING_URL=http://localhost
+      - REPORTING_URL=http://manager # Match your management container's name if running in the same stack
     # - REPORTING_PORT=8088
     # - REPORTING_TIMEOUT=5
     # - PROXY_NAME=IPTV-Proxy
-    # - INTERNAL_PROXY_URL=http://localhost
+      - INTERNAL_PROXY_URL=http://proxy # Match your proxy container's name if running in the same stack
     # - INTERNAL_PROXY_PORT=8089
     # - EXTERNAL_PROXY_URL=http://localhost
     # - EXTERNAL_PROXY_PORT=8089

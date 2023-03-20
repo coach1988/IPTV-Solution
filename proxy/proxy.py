@@ -15,7 +15,7 @@ __app__ = Flask('IPTV Stream Proxy')
 __active_sockets__ = {}
 
 # General default settings
-__DEFAULT_DEBUG = False
+__DEFAULT_DEBUG = True
 __DEFAULT_SOCKET_ADDRESS = '0.0.0.0'
 
 # Reporting default settings
