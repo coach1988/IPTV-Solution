@@ -380,7 +380,7 @@ class iptvChannelAdmin(admin.ModelAdmin):
     actions = ['enable_channels', 'disable_channels']
     change_list_template = 'admin/iptvChannel/change_list.html'
     list_filter = ('enabled', 'group_title', )
-    search_fields = ['name', 'url', 'tvg_id','tvg_name', 'tvg_logo', 'group_title__name']
+    search_fields = ['name', 'url', 'tvg_id','tvg_name', 'tvg_logo__url', 'group_title__name']
     readonly_fields = ('last_seen', 'added_on',)
     fieldsets = [
         ('Basic information', {'fields': ['enabled', 'name', 'url']}),

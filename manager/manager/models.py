@@ -68,10 +68,7 @@ class iptvDownstreamPlaylist(models.Model):
         verbose_name_plural = 'Downstream - Playlists'
 
     def __str__(self):
-        return(self.name)        
-
-    def is_upperclass(self):
-        return self.year_in_school in {self.JUNIOR, self.SENIOR}
+        return(self.name)
 
 class iptvEPG(models.Model):
     enabled = models.BooleanField(verbose_name='Enabled', default=True)
