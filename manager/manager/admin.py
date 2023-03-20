@@ -406,10 +406,10 @@ class iptvIconAdmin(admin.ModelAdmin):
             try:
                 icon_helper.download_icon()
                 count_success += 1
-                log_admin(LogLevel.DEBUG, self, request, queryset, f'Downloaded icon "{icon}"')
+                log_admin(LogLevel.DEBUG, self, request, queryset.none(), f'Downloaded icon "{icon}"')
             except Exception as err:
                 count_fail += 1
-                log_admin(LogLevel.WARNING, self, request, queryset, f'Icon download failed for "{icon}"')
+                log_admin(LogLevel.WARNING, self, request, queryset.none(), f'Icon download failed for "{icon}"')
         self.message_user(request, ngettext(
             f'{count_success} icon downloaded.',
             f'{count_success} icons downloaded.',
@@ -422,7 +422,7 @@ class iptvIconAdmin(admin.ModelAdmin):
                 f'{count_fail} icons downloads failed.',
                 count_fail,
             ), messages.ERROR)
-            log_admin(LogLevel.WARNING, self, request, queryset, f'{count_fail} failure(s)')
+            log_admin(LogLevel.WARNING, self, request, queryset.none(), f'{count_fail} failure(s)')
 
     def delete_queryset(self, request, queryset):
         count = queryset.count()     
