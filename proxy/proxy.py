@@ -103,9 +103,7 @@ def start(path):
 
     url = request.environ['REQUEST_URI'].removeprefix('/stream/start/')
     path = base64.b64decode(url.encode('utf-8')).decode('utf-8')
-    client = request.environ['X_REAL_IP'] if 'X-Real-Ip' in request.environ else None
-    if not client:
-        client = request.environ['X_FORWARDED_FOR'] if 'X-Forwarded-For' in request.environ else request.environ['REMOTE_ADDR']
+    client = request.environ['HTTP_X_FORWARDED_FOR'] if 'HTTP_X_FORWARDED_FOR' in request.environ else request.environ['REMOTE_ADDR']
     ua_string = request.environ['HTTP_USER_AGENT']
     logger.info(f'START: Received stream start request for {path} from {client}')        
 
