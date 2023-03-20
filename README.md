@@ -40,7 +40,7 @@ The setup currently works like this:
 
 Each defined downstream playlist and each EPG is available via individual URL's.
 
-It is meant to allow you to import the set of channel groups you are interested from your upstream, leaving out all the groups that you don't want anyways. You then define a playlist for each one of your clients by defining a set of channel groups they will receive. If these groups still contain individual channels you don't want them to receive, you can filter them out. You can also disable channel groups, channels and playlists individually to exclude them from playlists/downloads.
+It is meant to allow you to import the set of channel groups you are interested in from your upstream, leaving out all the groups that you don't want anyways. You then define a playlist for each one of your clients by defining a set of channel groups they will receive. If these groups still contain individual channels you don't want them to receive, you can filter them out. You can also disable channel groups, channels and playlists individually to exclude them from playlists/downloads.
 
 ## URL's and login
 
