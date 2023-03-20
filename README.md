@@ -66,7 +66,7 @@ http://localhost:8088/manager/get/playlist/<name>
 
 ## Known issues
 
-- Code quality: I am no coder, especially not for Django. Expect a lot of dirty code. But waht can i say? It works for me;)
+- Code quality: I am no coder, especially not for Django. Expect a lot of dirty code. But what can i say? It works for me;)
 - Encodings: I am bad at encodings, I am bad at http-headers and I am bad at writing files; I am sure that you will run into issues with more exotic characters and encodings
 - Security: I am aware of a lot of conceptual security issues; This solution was designed to be deployed inhouse for my wife (and no, she would not know how to spoof anything or get around the firewall)
 - Webserver: Right now, everything is based on the Django's and Flask's webservers; I would like to give interested parties at least the option to deploy this solution with their own webservers, but I don't know enough about WSGI and ASGI for that yet
