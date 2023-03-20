@@ -4,6 +4,8 @@
 
 A Django-based web-UI to manage IPTV streaming playlists (M3U) + EPG's (XMLTV), upstream and downstream. It is basically my first Django project and it is one of only few of my projects that have a real use and that others get to see, so please bear with me if the code is not very pythonic;-)
 
+It is split up into a management service (Django based, port 8088) and a streaming proxy (Flask based, port 8089).
+
 PS: Yes, the name is not very creative.
 
 ## Features:
@@ -71,24 +73,24 @@ http://localhost:8088/manager/get/playlist/<name>
 - Security: I am aware of a lot of conceptual security issues; This solution was designed to be deployed inhouse for my wife (and no, she would not know how to spoof anything or get around the firewall)
 - Webserver: Right now, everything is based on the Django's and Flask's webservers; I would like to give interested parties at least the option to deploy this solution with their own webservers, but I don't know enough about WSGI and ASGI for that yet
 - Dropping of sessions currently only works from the overview, but not from a session's details page 
-    - It can also take ~30 seconds before the stream stalls
+    - It can also take up to ~45 seconds before the stream stalls
 - Many more (especially as I have only one concurrent upstream connection to test with)
 - Mean exceptions when dropping a stream;)
 
-## Why Django's and Flask's webserver?
+## Why Django's *AND* Flask's webserver?
 
 I wanted to use Django as a management UI once i learned about it and I had this plan for a rewrite of a proxy for a long time. I unfortunately had to find out that Django is not really streaming friendly, so I had to fall back to Flask for that. But hey, at laest we've gained support for distributed setups:)
 
-## To do's
+## ToDo's
 
-- It is far from complete
 - Overwrite handling: Allow for a convenient way to replace things such as channel name, channel groups, etc.
 - Service files: Ship it with some systemd units
 - User session limits: Implement some enforcement of concurrency limits for upstream playlists
+- It is far from complete, so probably many additional things
 
 ## How to run
 
-<details id="bkmrk-docker-compose-clone"><summary>docker-compose</summary>
+### docker-compose:
 
 1. Clone the git repository:  
     ```
@@ -106,7 +108,8 @@ I wanted to use Django as a management UI once i learned about it and I had this
 
 The docker container for the manager uses two volumes, one for the database, one for static files (icons, epg and playlists).
 
-</details><details id="bkmrk-local-execution-clon"><summary>Local execution</summary>
+
+### manual execution:
 
 1. Clone the git repository:  
     ```
@@ -127,8 +130,6 @@ The docker container for the manager uses two volumes, one for the database, one
     ```
     proxy/run_local.sh
     ```
-
-</details>
 
 ## Variables
 
