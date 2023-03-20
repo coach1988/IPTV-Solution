@@ -11,7 +11,6 @@ VOLUME ["/app/staticfiles/"]
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
-COPY database/ /app/database/
 COPY run.sh /app/run.sh
 COPY iptvmanager/ /app/iptvmanager/
 COPY *.py /app/

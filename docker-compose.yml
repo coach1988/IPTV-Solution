@@ -3,7 +3,7 @@ version: "3"
 services:
   manager:
     build:
-      context: ./manager  
+      context: ./manager/
     container_name: "IPTV-Manager"
     image: iptv-manager
     ports:
