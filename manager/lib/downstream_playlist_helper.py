@@ -74,19 +74,20 @@ class DownstreamPlaylistHelper():
 
             logger.info(f'DOWNSTREAM {self.playlist.name}: Filter mode: {self.playlist_filtermode}')
             for channel_filter in self.playlist_filter.split(sep='\n'):
-                channel_filter = re.escape(channel_filter.format(filter=channel_filter).rstrip('\r'))
-                # TODO: Find a better place for the RE
-                if self.playlist_filtermode == 'P':
-                    filter_re = rf'(#EXTINF.*group-title=\".*?\",{channel_filter}.*?\n.*(\n|\Z))'
-                elif self.playlist_filtermode == 'S':
-                    filter_re = rf'(#EXTINF.*group-title=\".*?\",.*?{channel_filter}\n.*(\n|\Z))'
-                elif self.playlist_filtermode == 'E':
-                    filter_re = rf'(#EXTINF.*group-title=\".*?\",{channel_filter}\n.*(\n|\Z))'
-                else:
-                    filter_re = rf'(#EXTINF.*group-title=\".*?\",.*?{channel_filter}.*?\n.*(\n|\Z))'
+                if channel_filter:
+                    channel_filter = re.escape(channel_filter.format(filter=channel_filter).rstrip('\r'))
+                    # TODO: Find a better place for the RE
+                    if self.playlist_filtermode == 'P':
+                        filter_re = rf'(#EXTINF.*group-title=\".*?\",{channel_filter}.*?\n.*(\n|\Z))'
+                    elif self.playlist_filtermode == 'S':
+                        filter_re = rf'(#EXTINF.*group-title=\".*?\",.*?{channel_filter}\n.*(\n|\Z))'
+                    elif self.playlist_filtermode == 'E':
+                        filter_re = rf'(#EXTINF.*group-title=\".*?\",{channel_filter}\n.*(\n|\Z))'
+                    else:
+                        filter_re = rf'(#EXTINF.*group-title=\".*?\",.*?{channel_filter}.*?\n.*(\n|\Z))'
 
-                logger.info(f'DOWNSTREAM {self.playlist.name}: Filtering out channels matching: "{channel_filter}"')
-                content = re.sub(filter_re, '', content, flags=0)
+                    logger.info(f'DOWNSTREAM {self.playlist.name}: Filtering out channels matching: "{channel_filter}"')
+                    content = re.sub(filter_re, '', content, flags=0)
 
             return content
         
