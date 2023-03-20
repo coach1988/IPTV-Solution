@@ -143,6 +143,8 @@ USE_TZ = True
 STATICFILES_DIRS = [
    os.path.join(BASE_DIR, 'manager/static/')
 ]
+if not (os.path.isdir(STATICFILES_DIRS[0])):
+    os.mkdir(STATICFILES_DIRS[0])
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
