@@ -15,6 +15,14 @@ PS: Yes, the name is not very creative.
 - [x] (Basic) Session handling
 - [x] Channel icon cache and management
 
+## Impressions
+
+Here are some pictures:
+- https://pasteboard.co/tgCR6zdVqiid.png
+- https://pasteboard.co/qhEQno73k8Ty.png
+- https://pasteboard.co/cIaUbT6eZtuP.png
+- https://pasteboard.co/MsNCJs84tOYO.png
+
 ## How does it work?
 
 The setup currently works like this:
