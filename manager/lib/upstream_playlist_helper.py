@@ -105,22 +105,30 @@ class UpstreamPlaylistHelper():
                 if not channel_meta:
                     break  # EOF
                 name = self.name_re.search(channel_meta)[1]
-                logo = self.logo_re.search(channel_meta)[1]
-                group = self.group_re.search(channel_meta)[1]
-                tvg_name = self.tvg_name_re.search(channel_meta)[1]
-                tvg_id = self.tvg_id_re.search(channel_meta)[1]
+
+                tmp = self.logo_re.search(channel_meta)
+                if tmp:
+                    logo = tmp[1]
+
+                tmp = self.group_re.search(channel_meta)
+                if tmp:
+                    group = tmp[1]
+
+                tmp = self.tvg_name_re.search(channel_meta)
+                if tmp:
+                    tvg_name = tmp[1]
+
+                tmp = self.tvg_id_re.search(channel_meta)
+                if tmp:
+                    tvg_id = tmp[1]
+
                 fk_group, created = iptvGroup.objects.update_or_create(name=group)
                 if logo != '':
                     logger.info(f'UPSTREAM {self.playlist.name}: Importing logo "{logo}"')
                     fk_logo, created = iptvIcon.objects.update_or_create(url=logo)
-                    logger.info(f'UPSTREAM {self.playlist.name}: Importing channel "{name}"')
-                    asyncio.run(
-                        iptvChannel.objects.aupdate_or_create(name=name, defaults={'url':url, 'tvg_id':tvg_id, 'tvg_name':tvg_name,'tvg_logo':fk_logo, 'group_title':fk_group}))
-                else:
-                    logger.info(f'UPSTREAM {self.playlist.name}: Importing channel "{name}"')
-                    asyncio.run(
-                        iptvChannel.objects.aupdate_or_create(name=name, url=url, tvg_id=tvg_id, tvg_name=tvg_name,
-                                                              group_title=fk_group))
+                logger.info(f'UPSTREAM {self.playlist.name}: Importing channel "{name}"')
+                asyncio.run(
+                    iptvChannel.objects.aupdate_or_create(name=name, defaults={'url':url, 'tvg_id':tvg_id, 'tvg_name':tvg_name,'tvg_logo':fk_logo, 'group_title':fk_group}))
 
     def get_playlist(self):
         logger.info(f'UPSTREAM: Getting: {self.playlist_name}')
