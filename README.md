@@ -32,6 +32,7 @@ The setup currently works like this:
 1. You define upstream user agents; These strings will be sent to upstream servers when downloading files
 2. You define upstream playlists; These can origin from local files or a http(s) URL's. They use the user agents defined in the first step and can be further filtered before their channels and icons will be imported. 
     - The filters apply to the "group-title" attribute within M3U files and filter out all channels that belong to groups with these names (one group per line)
+    - Tip: Trigger a manual download and import via the actions above the list to populate your channels, icons and groups
 3. You define upstream proxy servers: These have an internal and external URL and port. If you are hosting the management server and the streaming proxy on the same host, you will leave the internal URL's pointing to the localhost and the default port, unless you've changed these settings. The external URL and port should match the URL's of the proxy servers and their ports. 
     - The information you're using for the internal network connection will be used only by the management server to connect to the proxy in case you want to drop a running streaming session
     - The information for the external network connection will be inserted as a proxy for URL-entries in M3U's and XML's (for EPG's)
