@@ -148,8 +148,8 @@ The docker container for the manager uses two volumes, one for the database, one
 </td></tr><tr style="height: 46.6px;"><td style="border-width: 1px; height: 46.6px;">DJANGO_SUPERUSER_EMAIL</td><td style="border-width: 1px; height: 46.6px;">admin@admin.com</td><td style="border-width: 1px; height: 46.6px;">Default admin email address  
 </td></tr><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">DJANGO_SUPERUSER_PASSWORD</td><td style="border-width: 1px; height: 29.8px;">password  
 </td><td style="border-width: 1px; height: 29.8px;">Default admin password  
-</td></tr><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">SECRET_KEY</td><td style="border-width: 1px; height: 29.8px;">  
-</td><td style="border-width: 1px; height: 29.8px;">Django's secret key</td></tr><tr><td style="border-width: 1px;">DEBUG</td><td style="border-width: 1px;">True  
+</td></tr><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">SECRET_KEY</td><td style="border-width: 1px; height: 29.8px;"><strong>Fill me in!</strong>  
+</td><td style="border-width: 1px; height: 29.8px;">Some secret key for Django, e.g. from https://djecrety.ir/</td></tr><tr><td style="border-width: 1px;">DEBUG</td><td style="border-width: 1px;">True  
 </td><td style="border-width: 1px;">Enable Django debugging; <strong>Should be set to "True" unless you want to deal with the static file management</strong>
 </td></tr><tr><td style="border-width: 1px;">SOCKET_ADDRESS</td><td style="border-width: 1px;">0.0.0.0  
 </td><td style="border-width: 1px;">The IP to bind the socket to</td></tr><tr><td style="border-width: 1px;">MANAGEMENT_URL</td><td style="border-width: 1px;">http://localhost  
