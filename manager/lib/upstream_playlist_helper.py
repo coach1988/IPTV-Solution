@@ -126,6 +126,8 @@ class UpstreamPlaylistHelper():
                 if logo != '':
                     logger.info(f'UPSTREAM {self.playlist.name}: Importing logo "{logo}"')
                     fk_logo, created = iptvIcon.objects.update_or_create(url=logo)
+                else:
+                    fk_logo = None
                 logger.info(f'UPSTREAM {self.playlist.name}: Importing channel "{name}"')
                 asyncio.run(
                     iptvChannel.objects.aupdate_or_create(name=name, defaults={'url':url, 'tvg_id':tvg_id, 'tvg_name':tvg_name,'tvg_logo':fk_logo, 'group_title':fk_group}))
