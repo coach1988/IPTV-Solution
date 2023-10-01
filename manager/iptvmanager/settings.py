@@ -29,6 +29,9 @@ __DEFAULT_PLAYLIST_TIMEOUT = 120
 __DEFAULT_EPG_TIMEOUT = 120
 __DEFAULT_ICON_TIMEOUT = 15
 __DEFAULT_INTERNAL_TIMEOUT = 1
+__DEFAULT_ALLOWED_URL_SCHEMES = ['http', 'https', 'mmsh', 'mmst', 'mmsu', 'mms', 'rtmp', 'rtsp']
+__DEFAULT_BLOCKED_PATH_TYPES = ['.m3u', '.m3u8', '.mpd']
+__DEFAULT_BLOCKED_URL_REGEXS = ['output=playlist.m3u[8]?', 'www.youtube.com/']
 __DEFAULT_ALLOWED_HOSTS =  ['*']
 __DEFAULT_DEBUG = True
 __DEFAULT_LOGLEVEL = logging.DEBUG
@@ -39,18 +42,18 @@ mimetypes.add_type("text/css", ".css", True)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-
 SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ['DEBUG']) if 'DEBUG' in os.environ else __DEFAULT_DEBUG
 
-ALLOWED_HOSTS = eval(os.environ['ALLOWED_HOSTS']) if 'ALLOWED_HOSTS' in os.environ else __DEFAULT_ALLOWED_HOSTS
+ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].encode if 'ALLOWED_HOSTS' in os.environ else __DEFAULT_ALLOWED_HOSTS
+if not isinstance(ALLOWED_HOSTS, list):
+    ALLOWED_HOSTS = eval(ALLOWED_HOSTS)
 
 # Application definition
 
@@ -178,8 +181,12 @@ EPG_TIMEOUT = int(os.environ['EPG_TIMEOUT']) if 'EPG_TIMEOUT' in os.environ else
 ICON_TIMEOUT = int(os.environ['ICON_TIMEOUT']) if 'ICON_TIMEOUT' in os.environ else __DEFAULT_ICON_TIMEOUT
 INTERNAL_TIMEOUT = int(os.environ['INTERNAL_TIMEOUT']) if 'INTERNAL_TIMEOUT' in os.environ else __DEFAULT_INTERNAL_TIMEOUT
 
-logging.basicConfig(format='%(asctime)s [%(levelname)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.DEBUG)
+ALLOWED_URL_SCHEMES = os.environ['ALLOWED_URL_SCHEMES'].encode() if 'ALLOWED_URL_SCHEMES' in os.environ else __DEFAULT_ALLOWED_URL_SCHEMES
+BLOCKED_PATH_TYPES = os.environ['BLOCKED_PATH_TYPES'].encode() if 'BLOCKED_PATH_TYPES' in os.environ else __DEFAULT_BLOCKED_PATH_TYPES
+BLOCKED_URL_REGEXS = os.environ['BLOCKED_URL_REGEXS'].encode() if 'BLOCKED_URL_REGEXS' in os.environ else __DEFAULT_BLOCKED_URL_REGEXS
+
 LOGLEVEL = os.environ['LOGLEVEL'] if 'LOGLEVEL' in os.environ else __DEFAULT_LOGLEVEL
+
 logging.basicConfig(format='%(asctime)s [%(levelname)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=LOGLEVEL )
 logger = logging.getLogger(__name__)
 
@@ -199,6 +206,11 @@ logger.info(f'MANAGEMENT_URL: {MANAGEMENT_URL}')
 logger.info(f'INTERNAL_MANAGEMENT_PORT: {INTERNAL_MANAGEMENT_PORT}')
 logger.info(f'EXTERNAL_MANAGEMENT_PORT: {EXTERNAL_MANAGEMENT_PORT}')
 logger.info(f'INTERNAL_TIMEOUT: {INTERNAL_TIMEOUT}')
+
+# Upstream connection filter
+logger.info(f'ALLOWED_URL_SCHEMES: {ALLOWED_URL_SCHEMES}')
+logger.info(f'BLOCKED_PATH_TYPES: {BLOCKED_PATH_TYPES}')
+logger.info(f'BLOCKED_URL_REGEXS: {BLOCKED_URL_REGEXS}')
 
 # Upstream connection
 logger.info(f'USER_AGENT_STRING: {USER_AGENT_STRING}')

@@ -91,7 +91,8 @@ class EPGHelper():
             content = epg.read()        
         re_url = '<icon src=\"([\S]*)\"'
         for icon_url in re.findall(re_url, content, flags=0):
-            asyncio.run(iptvIcon.objects.aupdate_or_create(url=icon_url))
+            #asyncio.run(iptvIcon.objects.aupdate_or_create(url=icon_url))
+            iptvIcon.objects.update_or_create(url=icon_url)
             encoded_url = base64.b64encode(icon_url.encode('utf-8')).decode('utf-8')
             # TODO: Static URL
             proxy_url = f'{settings.MANAGEMENT_URL}:{settings.EXTERNAL_MANAGEMENT_PORT}/get/icon/{encoded_url}'

@@ -33,4 +33,5 @@ fi
 python3 ./manage.py makemigrations && \
 python3 ./manage.py migrate && \
 python3 ./manage.py createsuperuser --username ${DJANGO_SUPERUSER_USERNAME} --noinput --email "${DJANGO_SUPERUSER_EMAIL}"
+
 python3 ./manage.py runserver ${SOCKET_ADDRESS}:${INTERNAL_MANAGEMENT_PORT}

@@ -92,7 +92,7 @@ class IconHelper():
             
     def delete_icon_file(self):
         logger.info(f'ICON: Received delete request for {self.icon.url}') 
-        if os.path.exists(self.icon_filepath):
+        if (os.path.exists(self.icon_filepath)) and not (os.path.isdir(self.icon_filepath)):
             os.unlink(self.icon_filepath)
             logger.info(f'ICON: Icon deleted: {self.icon.url}')
         else:

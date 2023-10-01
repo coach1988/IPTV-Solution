@@ -154,6 +154,12 @@ The docker container for the manager uses two volumes, one for the database, one
 </td><td style="border-width: 1px;">Enable Django debugging; <strong>Should be set to "True" unless you want to deal with the static file management</strong>
 </td></tr><tr><td style="border-width: 1px;">LOGLEVEL</td><td style="border-width: 1px;">DEBUG  
 </td><td style="border-width: 1px;">Set log level, see <a href='https://docs.python.org/3/howto/logging.html#logging-levels" target=_blank>this</a> list  
+</td></tr><tr><tr><td style="border-width: 1px;">ALLOWED_URL_SCHEMES</td><td style="border-width: 1px;">['http', 'https', 'mmsh', 'mmst', 'mmsu', 'mms', 'rtmp', 'rtsp']  
+</td><td style="border-width: 1px;">Disable any channel on first import that does not use one of these URL schemes  
+</td></tr><tr><tr><td style="border-width: 1px;">BLOCKED_PATH_TYPES</td><td style="border-width: 1px;">['.m3u', '.m3u8', '.mpd']  
+</td><td style="border-width: 1px;">Disable any channel on first import that has a path ending with one of these suffixes  
+</td></tr><tr><tr><td style="border-width: 1px;">BLOCKED_URL_REGEXS</td><td style="border-width: 1px;">['output=playlist.m3u[8]?', 'www.youtube.com/', ]
+</td><td style="border-width: 1px;">Disable any channel on first import that has a URL matching one of these RegEx's  
 </td></tr><tr><td style="border-width: 1px;">SOCKET_ADDRESS</td><td style="border-width: 1px;">0.0.0.0  
 </td><td style="border-width: 1px;">The IP to bind the socket to</td></tr><tr><td style="border-width: 1px;">MANAGEMENT_URL</td><td style="border-width: 1px;">http://localhost  
 </td><td style="border-width: 1px;">Used during M3U and EPG generation for icon URL prefixes</td></tr><tr><td style="border-width: 1px;">INTERNAL_MANAGEMENT_PORT</td><td style="border-width: 1px;">8088  

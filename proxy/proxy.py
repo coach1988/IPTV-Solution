@@ -1,11 +1,14 @@
 import os
+import re
 import base64
 import logging
 import socket
 
 from requests import get
+from requests.structures import CaseInsensitiveDict
 from http import HTTPStatus
 from flask import Flask, Response, request, copy_current_request_context
+from urllib.parse import urlparse
 
 # TODO: Respect log levels / debug parameter
 logging.basicConfig(format='%(asctime)s [%(levelname)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
@@ -36,8 +39,8 @@ __DEFAULT_STREAM_TIMEOUT = 15
 
 _reportActionBegin = 'Begin'
 _reportActionEnd = 'End'
-_session_id_divider = '|'
-_session_id_string = '{path}' + _session_id_divider + '{client}'
+_divider = '|'
+_session_id_string = '{path}' + _divider + '{client}'
 
 debug = bool(os.environ['DEBUG']) if 'DEBUG' in os.environ else __DEFAULT_DEBUG
 socket_address = os.environ['SOCKET_ADDRESS'] if 'SOCKET_ADDRESS' in os.environ else __DEFAULT_SOCKET_ADDRESS
@@ -94,18 +97,52 @@ def report(action, client, ua_string, url):
     except Exception as err:
         logger.exception(f'REPORT: Error reporting {action}', err)
 
+def is_line_available(url):
+    result = False
+    try:
+        status_endpoint = f'manager/get/status/{url}'
+        result = get(f'{reporting_url}:{reporting_port}/{status_endpoint}', allow_redirects=True, timeout=reporting_timeout).text
+    except Exception as err:
+        logger.exception(f'IS_LINE_AVAILABLE: Error checking status of {url}', err)
+    return(result)
+
+def get_channel_opts(url):
+    result = False
+    try:
+        opts_endpoint = f'manager/get/opts/{url}'
+        result = get(f'{reporting_url}:{reporting_port}/{opts_endpoint}', allow_redirects=True, timeout=reporting_timeout).text
+    except Exception as err:
+        logger.exception(f'GET_CHANNEL_OPTS: Error checking status of {url}', err)
+    return(result)
 
 @__app__.route(f'/stream/start/<path:path>')
 def start(path):
+
     global __active_sockets__
     global _session_id_string
-    global _session_id_divider
+    global _divider
 
     url = request.environ['REQUEST_URI'].removeprefix('/stream/start/')
-    path = base64.b64decode(url.encode('utf-8')).decode('utf-8')
+    path = base64.b64decode(url.encode('utf-8') + b'==========').decode('utf-8')
     client = request.environ['HTTP_X_FORWARDED_FOR'] if 'HTTP_X_FORWARDED_FOR' in request.environ else request.environ['REMOTE_ADDR']
-    ua_string = request.environ['HTTP_USER_AGENT']
-    logger.info(f'START: Received stream start request for {path} from {client}')        
+    user_agent_string = request.environ['HTTP_USER_AGENT']
+    logger.info(f'START: Received stream start request for {path} from {client}')
+
+    extra_opts = get_channel_opts(url)
+    hits = re.findall('#([\S]+?):([\s\S]+?)=([^\n]*)', extra_opts)
+    referer = ''
+    stream = None
+    for hit in hits:
+        opt_type = hit[0]
+        name = hit[1]
+        value = hit[2]
+
+        if name == 'http-user-agent':
+            logger.info(f'START: Using channel specific user agent: {value}')
+            user_agent_string = value
+        if name == 'http-referrer':
+            logger.info(f'START: Found channel specific referer: {value}')
+            referer = value
 
     # TODO: Make customizable
     request_headers = {
@@ -113,70 +150,91 @@ def start(path):
         'Accept': '*/*',
         'Cache-Control': 'no-cache',
         'Pragma': 'no-cache',
-        'Connection': 'keep-alive'    
+        'Connection': 'keep-alive'
     }
+    if referer != '':
+        request_headers['Referer'] = referer
+        logger.info(f'START: Using channel specific referer: {referer}')
     try:
-        stream = get(path, headers=request_headers, stream=True, allow_redirects=True, timeout=stream_timeout)
+        parsed_url = urlparse(path)
+        get_params = parsed_url.query
+        stream = get(parsed_url.scheme + '://' + parsed_url.netloc + parsed_url.path, headers=request_headers, params=get_params, stream=True, allow_redirects=True, timeout=stream_timeout)
+        state = is_line_available(url)
+        if state == 'False':
+            logger.warning(f'START: No line available for {path}, sending error')
+            return Response(status=HTTPStatus.TOO_MANY_REQUESTS)
         # Save stream's socket FD for later usage (forced disconnect)
         fno = stream.raw.fileno()
         session = _session_id_string.format(path=path, client=client)
         __active_sockets__[session] = fno
-        
+
         logger.info(f'START: Socket {fno} created for {session}')
-        logger.info(f'[START]: Created socket {fno} and added it to the global list, currently active sockets:\n{__active_sockets__}')
+        logger.info(f'[START]: Created socket {fno} and added it to the global list\nCurrently active sockets:\n{__active_sockets__}')
     except Exception as err:
         logger.warning(f'START: Error starting stream session {path}: {err}')
         return Response(status=HTTPStatus.GATEWAY_TIMEOUT)
 
-    response_headers = {
-        'Content-Type': stream.headers['Content-Type'],
-#       'Transfer-Encoding': 'chunked',
-#       'Content-Type':'video/mp4',
-        'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache',
-        'Connection': 'keep-alive',
-#       'Content-Disposition': 'inline',
-    }
-    response = Response(stream.raw, headers=response_headers)
+    # TODO: Implement header filtering(?)
+    response_headers = dict()
+    response_headers = dict(response_headers) | dict(stream.headers)
+    if 'Cache-Control' not in stream.headers:
+        response_headers.update({'Cache-Control':'no-cache'})
+    if 'Pragma' not in stream.headers:
+        response_headers.update({'Pragma':'no-cache'})
+    if 'Connection' not in stream.headers:
+        response_headers.update({'Connection':'keep-alive'})
+
+    import requests
+    from urllib3.exceptions import InsecureRequestWarning
+    requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+    response = Response(stream.raw, headers=response_headers) # Ignore certs for now
 
     @response.call_on_close
     @copy_current_request_context
     def end_stream():
-        client_ip = request.environ['REMOTE_ADDR']
-        ua_string = request.environ['HTTP_USER_AGENT']
+        global __active_sockets__
+        global _session_id_string
+        global _divider
+
+        client_ip = request.environ['HTTP_X_FORWARDED_FOR'] if 'HTTP_X_FORWARDED_FOR' in request.environ else request.environ['REMOTE_ADDR']
+        user_agent_string = request.environ['HTTP_USER_AGENT']
         url = request.environ['REQUEST_URI'].removeprefix('/stream/start/')
         path = base64.b64decode(url.encode('utf-8')).decode('utf-8')
-        session_id = _session_id_string.format(path=path, client=client_ip, ua_string=ua_string)
+        session_id = _session_id_string.format(path=path, client=client_ip)
+        logger.info(f'[START.ON_CLOSE]: Currently active sockets:\n{__active_sockets__}')
         logger.info(f'START.ON_CLOSE: Ended {session_id}')
         stream.close()
-        try:
-            del __active_sockets__[session_id]
-        except KeyError:
-            logger.error(f'START.ON_CLOSE: Socket for {session_id} was not found')
-        report(_reportActionEnd, client, ua_string, request.environ['PATH_INFO'])
-        logger.info(f'[START.ON_CLOSE]: Deleted socket from global list, currently active sockets:\n{__active_sockets__}')
-        return Response(status=HTTPStatus.MOVED_PERMANENTLY)  # TODO: Check if necessary
+        if __active_sockets__[session_id]:
+            try:
+                del __active_sockets__[session_id]
+                logger.info(f'[START.ON_CLOSE]: Deleted socket {session_id} from global list')
+            except KeyError:
+                logger.error(f'START.ON_CLOSE: Socket for {session_id} could not be deleted')
+        else:
+            logger.warning(f'[START.ON_CLOSE]: Socket {session_id} not in global list')
+        report(_reportActionEnd, client, user_agent_string, request.environ['PATH_INFO'])
+        logger.info(f'[START.ON_CLOSE]: Currently active sockets:\n{__active_sockets__}')
+        return Response(status=HTTPStatus.SERVICE_UNAVAILABLE)  # TODO: Check if necessary
 
     logger.info(f"START: Returning stream for {path} to {client}")
-    report(_reportActionBegin, client, ua_string, request.environ['PATH_INFO'])
+    report(_reportActionBegin, client, user_agent_string, request.environ['PATH_INFO'])
     return response
-
 
 @__app__.route(f'/stream/stop/<path:path>')
 def stop(path):
     global __active_sockets__
     global _session_id_string
-    global _session_id_divider
+    global _divider
 
     saved_session_decoded = base64.b64decode(path).decode('utf-8')
-    path, client = saved_session_decoded.split(_session_id_divider)
+    path, client = saved_session_decoded.split(_divider)
     session_id = _session_id_string.format(path=path, client=client)
     logger.info(f'STOP: Drop stream {session_id}')
     try:
         saved_socket = __active_sockets__[session_id]
         saved_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, fileno=saved_socket)
-        saved_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 0)  # Block socket from reconnecting, check if good or not
-        saved_socket.shutdown(socket.SHUT_RDWR)   
+        saved_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 0)  # Block socket from reconnecting TODO: check if useful
+        saved_socket.shutdown(socket.SHUT_RDWR)
         saved_socket.close()
         logger.info(f'STOP: Socket {session_id} closed')
     except KeyError:
