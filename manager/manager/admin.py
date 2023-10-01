@@ -564,10 +564,11 @@ class iptvStatAdmin(admin.ModelAdmin):
 
     last_duration.string = True
     last_duration.short_description = 'Last stream duration'
+    last_duration.admin_order_field = 'last_streamtime'
     total_duration.string = True
     total_duration.short_description = 'Total stream time'
+    total_duration.admin_order_field = 'streamtime'
 
-    #list_display = ('channel', 'client_ip', 'last_access', 'last_streamtime', 'streamtime')
     list_display = ('channel', 'client_ip', 'last_access', 'last_duration', 'total_duration')
     list_filter = ('client_ip',)
     readonly_fields = ('channel', 'client_ip', 'streamtime', 'last_access')
