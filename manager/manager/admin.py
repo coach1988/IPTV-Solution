@@ -556,7 +556,19 @@ class iptvStatAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
-    list_display = ('channel', 'client_ip', 'last_access', 'last_streamtime', 'streamtime')
+    def last_duration(self, obj):
+        return obj.last_streamtime.split('.')[0]
+
+    def total_duration(self, obj):
+        return obj.streamtime.split('.')[0]
+
+    last_duration.string = True
+    last_duration.short_description = 'Last stream duration'
+    total_duration.string = True
+    total_duration.short_description = 'Total stream time'
+
+    #list_display = ('channel', 'client_ip', 'last_access', 'last_streamtime', 'streamtime')
+    list_display = ('channel', 'client_ip', 'last_access', 'last_duration', 'total_duration')
     list_filter = ('client_ip',)
     readonly_fields = ('channel', 'client_ip', 'streamtime', 'last_access')
 

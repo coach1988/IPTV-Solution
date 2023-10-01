@@ -86,7 +86,6 @@ I wanted to use Django as a management UI once i learned about it and I had this
 
 - Overwrite handling: Allow for a convenient way to replace things such as channel name, channel groups, etc.
 - Service files: Ship it with some systemd units
-- User session limits: Implement some enforcement of concurrency limits for upstream playlists
 - It is far from complete, so probably many additional things
 
 ## How to run
