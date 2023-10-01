@@ -153,7 +153,7 @@ The docker container for the manager uses two volumes, one for the database, one
 </td><td style="border-width: 1px; height: 29.8px;">Some secret key for Django, e.g. from https://djecrety.ir/</td></tr><tr><td style="border-width: 1px;">DEBUG</td><td style="border-width: 1px;">True  
 </td><td style="border-width: 1px;">Enable Django debugging; <strong>Should be set to "True" unless you want to deal with the static file management</strong>
 </td></tr><tr><td style="border-width: 1px;">LOGLEVEL</td><td style="border-width: 1px;">DEBUG  
-</td><td style="border-width: 1px;">Set log level, see <a href="https://docs.python.org/3/howto/logging.html#logging-levels  
+</td><td style="border-width: 1px;">Set log level, see <a href='https://docs.python.org/3/howto/logging.html#logging-levels>this list</a>
 </td></tr><tr><tr><td style="border-width: 1px;">ALLOWED_URL_SCHEMES</td><td style="border-width: 1px;">['http', 'https', 'mmsh', 'mmst', 'mmsu', 'mms', 'rtmp', 'rtsp']  
 </td><td style="border-width: 1px;">Disable any channel on first import that does not use one of these URL schemes  
 </td></tr><tr><tr><td style="border-width: 1px;">BLOCKED_PATH_TYPES</td><td style="border-width: 1px;">['.m3u', '.m3u8', '.mpd']  
