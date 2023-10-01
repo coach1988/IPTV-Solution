@@ -152,6 +152,8 @@ The docker container for the manager uses two volumes, one for the database, one
 </td></tr><tr style="height: 29.8px;"><td style="border-width: 1px; height: 29.8px;">SECRET_KEY</td><td style="border-width: 1px; height: 29.8px;"><strong>Fill me in!</strong>  
 </td><td style="border-width: 1px; height: 29.8px;">Some secret key for Django, e.g. from https://djecrety.ir/</td></tr><tr><td style="border-width: 1px;">DEBUG</td><td style="border-width: 1px;">True  
 </td><td style="border-width: 1px;">Enable Django debugging; <strong>Should be set to "True" unless you want to deal with the static file management</strong>
+</td></tr><tr><td style="border-width: 1px;">LOGLEVEL</td><td style="border-width: 1px;">DEBUG  
+</td><td style="border-width: 1px;">Set log level, see <a href='https://docs.python.org/3/howto/logging.html#logging-levels" target=_blank>this</a> list  
 </td></tr><tr><td style="border-width: 1px;">SOCKET_ADDRESS</td><td style="border-width: 1px;">0.0.0.0  
 </td><td style="border-width: 1px;">The IP to bind the socket to</td></tr><tr><td style="border-width: 1px;">MANAGEMENT_URL</td><td style="border-width: 1px;">http://localhost  
 </td><td style="border-width: 1px;">Used during M3U and EPG generation for icon URL prefixes</td></tr><tr><td style="border-width: 1px;">INTERNAL_MANAGEMENT_PORT</td><td style="border-width: 1px;">8088  

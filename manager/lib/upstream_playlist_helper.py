@@ -19,7 +19,7 @@ if not (os.path.isdir(__upstream_playlist_dir__)):
         os.mkdir(__playlist_dir__)
     os.mkdir(__upstream_playlist_dir__)
 
-logging.basicConfig(format='%(asctime)s [%(levelname)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.DEBUG)
+logging.basicConfig(format='%(asctime)s [%(levelname)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
 
 class UpstreamPlaylistHelper():

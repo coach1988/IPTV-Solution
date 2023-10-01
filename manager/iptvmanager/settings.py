@@ -15,6 +15,7 @@ import logging
 import mimetypes
 
 from pathlib import Path
+from logging import NOTSET, DEBUG, INFO, WARNING, ERROR, CRITICAL
 
 __DEFAULT_DJANGO_SUPERUSER_USERNAME = 'admin'
 __DEFAULT_DJANGO_SUPERUSER_EMAIL = 'admin@admin.com'
@@ -30,6 +31,7 @@ __DEFAULT_ICON_TIMEOUT = 15
 __DEFAULT_INTERNAL_TIMEOUT = 1
 __DEFAULT_ALLOWED_HOSTS =  ['*']
 __DEFAULT_DEBUG = True
+__DEFAULT_LOGLEVEL = logging.DEBUG
 
 # https://stackoverflow.com/questions/35557129/css-not-loading-wrong-mime-type-django
 mimetypes.add_type("text/css", ".css", True)
@@ -177,6 +179,8 @@ ICON_TIMEOUT = int(os.environ['ICON_TIMEOUT']) if 'ICON_TIMEOUT' in os.environ e
 INTERNAL_TIMEOUT = int(os.environ['INTERNAL_TIMEOUT']) if 'INTERNAL_TIMEOUT' in os.environ else __DEFAULT_INTERNAL_TIMEOUT
 
 logging.basicConfig(format='%(asctime)s [%(levelname)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.DEBUG)
+LOGLEVEL = os.environ['LOGLEVEL'] if 'LOGLEVEL' in os.environ else __DEFAULT_LOGLEVEL
+logging.basicConfig(format='%(asctime)s [%(levelname)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=LOGLEVEL )
 logger = logging.getLogger(__name__)
 
 # Django
@@ -187,6 +191,7 @@ logger.info(f'DJANGO_SUPERUSER_EMAIL: {DJANGO_SUPERUSER_EMAIL}')
 #logger.info(f'DJANGO_SUPERUSER_PASSWORD: {DJANGO_SUPERUSER_PASSWORD}')
 #logger.info(f'SECRET_KEY: {SECRET_KEY}')
 logger.info(f'DEBUG: {DEBUG}')
+logger.info(f'LOGLEVEL: {LOGLEVEL}')
 
 # Network
 logger.info(f'SOCKET_ADDRESS: {SOCKET_ADDRESS}')

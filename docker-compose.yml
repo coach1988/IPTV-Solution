@@ -19,6 +19,7 @@ services:
     # - DJANGO_SUPERUSER_PASSWORD=password
       - SECRET_KEY=
     # - DEBUG=True
+    # - DEBUGLEVEL=DEBUG
     # - SOCKET_ADDRESS="0.0.0.0"
     # - MANAGEMENT_URL=http://localhost
     # - INTERNAL_MANAGEMENT_PORT=8088
