@@ -410,6 +410,26 @@ class iptvChannelAdmin(admin.ModelAdmin):
         ), messages.SUCCESS)
         log_admin(LogLevel.INFO, self, request, queryset, 'Success')
 
+    @admin.action(description='Protect channel(s)')
+    def protect_channels(self, request, queryset):
+        count = queryset.update(protected=True)
+        self.message_user(request, ngettext(
+            f'{count} channel protected.',
+            f'{count} channels protected.',
+            count,
+        ), messages.SUCCESS)
+        log_admin(LogLevel.INFO, self, request, queryset, 'Success')
+
+    @admin.action(description='Unprotect channel(s)')
+    def unprotect_channels(self, request, queryset):
+        count = queryset.update(protected=False)
+        self.message_user(request, ngettext(
+            f'{count} channel unprotected.',
+            f'{count} channels unprotected.',
+            count,
+        ), messages.SUCCESS)
+        log_admin(LogLevel.INFO, self, request, queryset, 'Success')
+
     def group_disabled(self, obj):
         if obj.group_title:
             return obj.group_title.enabled
@@ -435,7 +455,7 @@ class iptvChannelAdmin(admin.ModelAdmin):
 
     #list_display = ('name', 'enabled', 'url', 'tvg_id', 'tvg_name', 'tvg_logo', 'group_title', 'group_disabled', 'upstream', 'upstream_disabled', 'last_seen', 'extra_info')
     list_display = ('name', 'enabled', 'protected', 'url_preview', 'tvg_id', 'tvg_name', 'has_logo', 'group_title', 'group_disabled', 'upstream', 'upstream_disabled', 'last_seen')
-    actions = ['enable_channels', 'disable_channels']
+    actions = ['enable_channels', 'disable_channels', 'protect_channels', 'unprotect_channels']
     change_list_template = 'admin/iptvChannel/change_list.html'
     list_filter = ('enabled', 'protected', 'group_title', 'upstream')
     search_fields = ['name', 'url', 'tvg_id','tvg_name', 'tvg_logo__url', 'group_title__name', 'extra_info']
