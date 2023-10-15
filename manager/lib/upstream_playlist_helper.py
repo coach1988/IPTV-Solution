@@ -100,7 +100,7 @@ class UpstreamPlaylistHelper():
             fpath = self.playlist_filepath
 
         # Disable all channels prior to import to leave channels disabled that don't exist anymore
-        iptvChannel.objects.filter(upstream=self.playlist).update(enabled=False)
+        iptvChannel.objects.filter(upstream=self.playlist, protected=False).update(enabled=False)
 
         with open(fpath, 'r') as playlist:
             # Skip initial headers
@@ -223,8 +223,8 @@ class UpstreamPlaylistHelper():
                     channel = oldChan[0]
                     # If the channel is protected. keep it active
                     if channel.protected:
-                        create_enabled = True
-                        logger.info(f'UPSTREAM {self.playlist.name}: Channel "{name}" is protected, will create as enabled')
+                        create_enabled = channel.enabled
+                        logger.info(f'UPSTREAM {self.playlist.name}: Channel "{name}" is protected, will update as {create_enabled}')
                     # Otherwise check regular filters
                     else:
                         create_enabled = check_filters(url)

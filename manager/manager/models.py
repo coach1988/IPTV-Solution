@@ -136,7 +136,7 @@ class iptvChannel(models.Model):
     last_seen = models.DateTimeField(verbose_name='Last import', editable=False, blank=True, null=True)
     added_on = models.DateTimeField(verbose_name='First import', auto_now_add=True, editable=False)
     extra_info = models.TextField(verbose_name='Additional info', max_length=255, blank=True, null=True)
-    protected = models.BooleanField(verbose_name='Stay enabled', blank=False, default=False)
+    protected = models.BooleanField(verbose_name='Keep status', blank=False, default=False)
 
     class Meta:
         verbose_name = 'IPTV - Channel'
