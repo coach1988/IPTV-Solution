@@ -36,7 +36,7 @@ class iptvUpstreamPlaylist(models.Model):
     update_interval = models.PositiveSmallIntegerField(default=24)
     last_update = models.DateTimeField(editable=False, blank=True, null=True)
     max_conns = models.SmallIntegerField(verbose_name='Max concurrent streams', default=0, null=False)
-    in_use = models.SmallIntegerField(verbose_name='Active streams', default=0, null=False, editable=False)
+    in_use = models.SmallIntegerField(verbose_name='Active streams', default=0, null=False, editable=True)
     num_filtered_groups = models.SmallIntegerField(verbose_name='Filtered groups', help_text='Amount of filtered groups', null=False)
 
     class Meta:
@@ -118,8 +118,8 @@ class iptvIcon(models.Model):
     file_size_byte = models.PositiveSmallIntegerField(verbose_name='File size (kB)', editable=False, blank=True, null=True)
 
     class Meta:
-        verbose_name = 'IPTV - Icon'
-        verbose_name_plural = 'IPTV - Icons'
+        verbose_name = 'IPTV - Logo'
+        verbose_name_plural = 'IPTV - Logos'
 
     def __str__(self):
         return(self.url)
@@ -135,7 +135,8 @@ class iptvChannel(models.Model):
     upstream = models.ForeignKey(iptvUpstreamPlaylist, verbose_name='Playlist', on_delete=models.CASCADE, null=False)
     last_seen = models.DateTimeField(verbose_name='Last import', editable=False, blank=True, null=True)
     added_on = models.DateTimeField(verbose_name='First import', auto_now_add=True, editable=False)
-    extra_info = models.CharField(verbose_name='Additional info', max_length=255, blank=True, null=True)
+    extra_info = models.TextField(verbose_name='Additional info', max_length=255, blank=True, null=True)
+    protected = models.BooleanField(verbose_name='Stay enabled', blank=False, default=False)
 
     class Meta:
         verbose_name = 'IPTV - Channel'

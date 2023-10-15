@@ -30,7 +30,7 @@ class UpstreamPlaylistHelper():
     playlist_filepath = ''
     playlist_filepath_filtered = ''
 
-    name_re = re.compile(r'#[\s\S]+\",(.*)\n')
+    name_re = re.compile(r'#[\s\S]+\",(.*)')
     logo_re = re.compile(r'tvg-logo=\"([\S]*)\"')
     group_re = re.compile(r'group-title=\"([\S\s]*?)\"')
     tvg_id_re = re.compile(r'tvg-id=\"([\S\s]*?)\"')
@@ -76,10 +76,10 @@ class UpstreamPlaylistHelper():
         with open(self.playlist_filepath, 'r') as playlist:
             content = playlist.read()
 
-        for channel_filter in self.playlist.group_filter.splitlines():
-            logger.info(f'UPSTREAM {self.playlist.name}: Filtering out group "{channel_filter}"')
-            channel_filter = re.escape(channel_filter.strip())
-            content = re.sub(rf'#EXTINF.*group-title="{channel_filter}".*\n.*(\n|\Z)', '', content,flags=re.UNICODE)
+        for group_filter in self.playlist.group_filter.splitlines():
+            group_filter = re.escape(group_filter)
+            logger.info(f'UPSTREAM {self.playlist.name}: Filtering out group "{group_filter}"')
+            content = re.sub(rf'#EXTINF.*group-title="{group_filter}",(.*)\n(.*)(\n|\Z)([^#][\S]*)?', '', content)
 
         try:
             os.makedirs(os.path.dirname(self.playlist_filepath), exist_ok=True)
@@ -92,7 +92,6 @@ class UpstreamPlaylistHelper():
                 "UPSTREAM {self.playlist.name}: Could not write output file/directory \"{self.playlist_filepath_filtered}\", error:\n{err}")
 
     def import_channels(self):
-        logger.info(f'UPSTREAM {self.playlist.name}: Importing channels and logos...')
         if self.playlist.group_filter != '' :
             logger.info(f'UPSTREAM {self.playlist.name}: Importing filtered playlist')
             fpath = self.playlist_filepath_filtered
@@ -100,8 +99,11 @@ class UpstreamPlaylistHelper():
             logger.info(f'UPSTREAM {self.playlist.name}: Importing unfiltered playlist')
             fpath = self.playlist_filepath
 
+        # Disable all channels prior to import to leave channels disabled that don't exist anymore
+        iptvChannel.objects.filter(upstream=self.playlist).update(enabled=False)
+
         with open(fpath, 'r') as playlist:
-            # Remove headers
+            # Skip initial headers
             content = ''
             pos = None
             while not content.startswith('#EXTINF:'):
@@ -109,23 +111,36 @@ class UpstreamPlaylistHelper():
                 content = playlist.readline()
             playlist.seek(pos)
 
-            while True:
-                channel_meta = playlist.readline()
+            EOF = False
+            while not EOF:
+                line = ''
                 channel_extra = ''
-                if not channel_meta:
-                    break  # EOF
-                while not channel_meta.startswith('#EXTINF:'):
-                    logger.warning(f'UPSTREAM {self.playlist.name}: Unrecognized channel metadata "{channel_meta}"')
-                    # TODO: Utilize tag info
-                    channel_extra = channel_extra + '\n' + channel_meta
-                    channel_meta = playlist.readline()
+                channel_url = ''
 
-                url = playlist.readline().rstrip()
-                while url.startswith('#'): # Skip other headers
-                    logger.warning(f'UPSTREAM {self.playlist.name}: Unrecognized channel tag "{url}"')
-                    channel_extra = channel_extra + '\n' + url
-                    url = playlist.readline().rstrip()
+                while channel_url == '':
+                    line = playlist.readline()
 
+                    if line == '':
+                        EOF = True  # EOF
+                        break
+                    if line.startswith('#'):
+                        # It's some metadata
+                        if line.startswith('#EXTINF:'):
+                            # Standard metadata
+                            channel_meta = line.strip()
+                        if line.startswith('#EXTVLCOPT:'):
+                            # Additional info
+                            channel_extra += line.strip() + '\n'
+                    else:
+                        # It's the URL
+                        channel_url = line.strip()
+
+                if channel_url == '':
+                    break
+
+                url = channel_url
+
+                # TODO: One REgEx to rule them all...
                 name = self.name_re.search(channel_meta)
                 if name is not None:
                     name = name[1]
@@ -157,22 +172,22 @@ class UpstreamPlaylistHelper():
                 else:
                     tvg_id = None
 
-                # TODO: Make sure group and icon creation finishes before channel creation!
-                #fk_group, created = iptvGroup.objects.update_or_create(name=group, upstream=self.playlist)
-                fk_group, created = asyncio.run(iptvGroup.objects.aupdate_or_create(name=group, upstream=self.playlist))
+                fk_group = iptvGroup.objects.filter(name=group, upstream=self.playlist)
+                if not fk_group.exists():
+                    fk_group = asyncio.run(iptvGroup.objects.acreate(name=group, upstream=self.playlist))
+                    logger.info(f'UPSTREAM {self.playlist.name}: Imported group "{group}"')
+                else:
+                    fk_group = iptvGroup.objects.get(name=group, upstream=self.playlist)
+
+
                 if logo is not None and logo != '':
-                    logger.info(f'UPSTREAM {self.playlist.name}: Importing logo "{logo}"')
-                    #fk_logo, created = iptvIcon.objects.update_or_create(url=logo)
                     fk_logo, created = asyncio.run(iptvIcon.objects.aupdate_or_create(url=logo))
+                    if created:
+                        logger.info(f'UPSTREAM {self.playlist.name}: Imported logo "{logo}"')
                 else:
                     fk_logo = None
 
-                logger.info(f'UPSTREAM {self.playlist.name}: Importing channel "{name}"')
-
-                # Keep enabled status upon re-import/update
-                if iptvChannel.objects.filter(name=name, url=url, group_title=fk_group, upstream=self.playlist, extra_info=channel_extra).exists():
-                    create_enabled = iptvChannel.objects.get(name=name, url=url, group_title=fk_group, upstream=self.playlist, extra_info=channel_extra).enabled
-                else:
+                def check_filters(url):
                     parsed_url = urlparse(url)
 
                     ALLOWED_URL_SCHEMES = settings.ALLOWED_URL_SCHEMES
@@ -180,26 +195,45 @@ class UpstreamPlaylistHelper():
                         ALLOWED_URL_SCHEMES = eval(settings.ALLOWED_URL_SCHEMES)
                     matched_allowed_scheme = parsed_url.scheme in ALLOWED_URL_SCHEMES
                     if not matched_allowed_scheme:
-                        logger.warning(f'UPSTREAM: {self.playlist.name}: Disabling channel "{name}" by default due to a channel scheme filter')
-
-                    BLOCKED_URL_REGEXS = settings.BLOCKED_URL_REGEXS
-                    if not isinstance(BLOCKED_URL_REGEXS, list):
-                        BLOCKED_URL_REGEXS = eval(settings.BLOCKED_URL_REGEXS)
-                    matched_blocked_regex = any(re.compile(regex.strip()).match(url) for regex in BLOCKED_URL_REGEXS)
-                    if matched_blocked_regex:
-                        logger.warning(f'UPSTREAM: {self.playlist.name}: Disabling channel "{name}" by default due to a channel regex filter')
+                        logger.warning(
+                            f'UPSTREAM: {self.playlist.name}: Disabling channel "{name}" by default due to a channel scheme filter')
 
                     BLOCKED_PATH_TYPES = settings.BLOCKED_PATH_TYPES
                     if not isinstance(BLOCKED_PATH_TYPES, list):
                         BLOCKED_PATH_TYPES = eval(settings.BLOCKED_PATH_TYPES)
                     matched_blocked_type = any(parsed_url.path.endswith(s) for s in BLOCKED_PATH_TYPES)
                     if matched_blocked_type:
-                        logger.warning(f'UPSTREAM: {self.playlist.name}: Disabling channel "{name}" by default due to a channel type filter')
+                        logger.warning(
+                            f'UPSTREAM: {self.playlist.name}: Disabling channel "{name}" by default due to a channel type filter')
 
-                    create_enabled = (matched_allowed_scheme) and not (matched_blocked_type) and not (matched_blocked_regex) # Set disabled for possibly redirected channels
+                    BLOCKED_URL_REGEXS = settings.BLOCKED_URL_REGEXS
+                    if not isinstance(BLOCKED_URL_REGEXS, list):
+                        BLOCKED_URL_REGEXS = eval(settings.BLOCKED_URL_REGEXS)
+                    matched_blocked_regex = any(re.compile(regex.strip()).match(url) for regex in BLOCKED_URL_REGEXS)
+                    if matched_blocked_regex:
+                        logger.warning(
+                            f'UPSTREAM: {self.playlist.name}: Disabling channel "{name}" by default due to a channel regex filter')
 
-                asyncio.run(iptvChannel.objects.aupdate_or_create(name=name, url=url, upstream=self.playlist, tvg_id=tvg_id, tvg_name=tvg_name, tvg_logo=fk_logo, group_title=fk_group, extra_info=channel_extra, defaults={'enabled':create_enabled}))
-                #iptvChannel.objects.update_or_create(name=name, url=url, upstream=self.playlist, tvg_id=tvg_id, tvg_name=tvg_name, tvg_logo=fk_logo, group_title=fk_group, extra_info=channel_extra, defaults={'enabled':create_enabled})
+                    return ((matched_allowed_scheme) and not (matched_blocked_type) and not (matched_blocked_regex))  # Set disabled for possibly redirected channels
+
+                # Keep enabled status upon re-import/update
+                oldChan = iptvChannel.objects.filter(name=name, url=url, group_title=fk_group, upstream=self.playlist)
+                if oldChan.exists():
+                    create_enabled = False
+                    channel = oldChan[0]
+                    # If the channel is protected. keep it active
+                    if channel.protected:
+                        create_enabled = True
+                        logger.info(f'UPSTREAM {self.playlist.name}: Channel "{name}" is protected, will create as enabled')
+                    # Otherwise check regular filters
+                    else:
+                        create_enabled = check_filters(url)
+                    asyncio.run(oldChan.aupdate(tvg_id = tvg_id, tvg_name = tvg_name, tvg_logo = fk_logo, extra_info = channel_extra, last_seen = timezone.now(), enabled = create_enabled))
+                    logger.info(f'UPSTREAM {self.playlist.name}: Updated channel "{name}"')
+                else:
+                    create_enabled = check_filters(url)
+                    asyncio.run(iptvChannel.objects.acreate(name = name, url = url, upstream = self.playlist, tvg_id = tvg_id, tvg_name = tvg_name, tvg_logo = fk_logo, group_title = fk_group, extra_info = channel_extra, last_seen = timezone.now(), enabled = create_enabled))
+                    logger.info(f'UPSTREAM {self.playlist.name}: Imported channel "{name}"')
 
     def get_playlist(self):
         logger.info(f'UPSTREAM: Getting: {self.playlist_name}')

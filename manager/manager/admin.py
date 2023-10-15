@@ -434,14 +434,14 @@ class iptvChannelAdmin(admin.ModelAdmin):
     url_preview.short_description = 'URL'
 
     #list_display = ('name', 'enabled', 'url', 'tvg_id', 'tvg_name', 'tvg_logo', 'group_title', 'group_disabled', 'upstream', 'upstream_disabled', 'last_seen', 'extra_info')
-    list_display = ('name', 'enabled', 'url_preview', 'tvg_id', 'tvg_name', 'has_logo', 'group_title', 'group_disabled', 'upstream', 'upstream_disabled', 'last_seen')
+    list_display = ('name', 'enabled', 'protected', 'url_preview', 'tvg_id', 'tvg_name', 'has_logo', 'group_title', 'group_disabled', 'upstream', 'upstream_disabled', 'last_seen')
     actions = ['enable_channels', 'disable_channels']
     change_list_template = 'admin/iptvChannel/change_list.html'
-    list_filter = ('enabled', 'group_title', 'upstream')
+    list_filter = ('enabled', 'protected', 'group_title', 'upstream')
     search_fields = ['name', 'url', 'tvg_id','tvg_name', 'tvg_logo__url', 'group_title__name', 'extra_info']
     readonly_fields = ('last_seen', 'added_on', 'upstream')
     fieldsets = [
-        ('Base information', {'fields': ['enabled', 'name', 'url', 'extra_info', 'upstream']}),
+        ('Base information', {'fields': ['enabled', 'protected', 'name', 'url', 'extra_info', 'upstream']}),
         ('EPG information', {'fields': ['tvg_id', 'tvg_name', 'tvg_logo', 'group_title']}),
         ('History', {'fields': ['added_on', 'last_seen']}),
     ]
