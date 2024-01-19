@@ -96,7 +96,7 @@ class EPGHelper():
             encoded_url = base64.b64encode(icon_url.encode('utf-8')).decode('utf-8')
             # TODO: Static URL
             proxy_url = f'{settings.MANAGEMENT_URL}:{settings.EXTERNAL_MANAGEMENT_PORT}/get/icon/{encoded_url}'
-            content = re.sub(rf'<icon src=\"([\S]*)\"',proxy_url, content, flags=0)
+            content = re.sub(rf'<icon src=\"([\S]*)\"',rf'<icon src="{proxy_url}"', content, flags=0)
             
         try:
             with open(self.epg_filepath_proxy, 'w') as output:
