@@ -283,7 +283,7 @@ class UpstreamPlaylistHelper():
                 age = now - mod_time
                 if (age.seconds / 60 / 60) < self.playlist_update_interval:
                     logger.info(
-                        f'UPSTREAM {self.playlist.name}: File is {age.seconds / 60 / 60} hours old, download skipped...')
+                        f'UPSTREAM {self.playlist.name}: File is only {age.seconds / 60 / 60} hours old, download skipped...')
                 else:
                     logger.info(
                         f'UPSTREAM {self.playlist.name}: File is {age.seconds / 60 / 60} hours old, download required...')
@@ -293,7 +293,18 @@ class UpstreamPlaylistHelper():
                 self.download_upstream_playlist()
 
         if self.playlist.group_filter:
-            self.filter_channels()
+            if os.path.exists(self.playlist_filepath_filtered):        
+                logger.info(f'UPSTREAM {self.playlist.name}: Filtered file already exists, checking if filtering is required again...')
+                mod_time = datetime.datetime.fromtimestamp(os.path.getmtime(self.playlist_filepath))
+                now = datetime.datetime.now()
+                age = now - mod_time
+                if (age.seconds / 60 / 60) < self.playlist_update_interval:
+                    logger.info(
+                        f'UPSTREAM {self.playlist.name}: Filtered file is only {age.seconds / 60 / 60} hours old, filtering skipped...')
+                else:
+                    logger.info(
+                        f'UPSTREAM {self.playlist.name}: Filtered file is {age.seconds / 60 / 60} hours old, filtering required...')
+                    self.filter_channels()
 
         if self.playlist.last_update:
             logger.info(f'UPSTREAM {self.playlist_name}: Playlist\'s last import was {self.playlist.last_update}')
