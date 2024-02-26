@@ -109,7 +109,7 @@ class DownstreamPlaylistHelper():
 
             logger.info(f'DOWNSTREAM: Checking group entry "{playlist_group}"')
             if len(playlist_group.split(separator)) == 2:
-                group_name = playlist_group.split(separator)[0].strip()
+                group_name = playlist_group.split(separator)[0]
                 group_upstream = playlist_group.split(separator)[1].strip()
                 logger.info(f'DOWNSTREAM: group_name = "{group_name}"')
                 logger.info(f'DOWNSTREAM: group_upstream = "{group_upstream}"')
@@ -130,7 +130,7 @@ class DownstreamPlaylistHelper():
                 logger.info(f'DOWNSTREAM: Group "{group}" is enabled, adding to list')
                 enabled_groups.append(group)
             else:
-                logger.warning(f'DOWNSTREAM: Group "{group}" is disabled or was not found, skipping...')
+                logger.warning(f'DOWNSTREAM: Group "{group_name}" is disabled or was not found, skipping...')
 
             if upstream and upstream.enabled:
                 logger.info(f'DOWNSTREAM: Upstream "{upstream}" is enabled, adding to list')
