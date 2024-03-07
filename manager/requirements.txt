@@ -1,3 +1,4 @@
-requests
-pytz
 django
+m3u-parser
+pytz
+requests

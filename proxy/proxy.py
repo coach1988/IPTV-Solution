@@ -5,7 +5,6 @@ import logging
 import socket
 
 from requests import get
-from requests.structures import CaseInsensitiveDict
 from http import HTTPStatus
 from flask import Flask, Response, request, copy_current_request_context
 from urllib.parse import urlparse

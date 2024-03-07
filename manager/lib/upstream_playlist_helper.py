@@ -15,10 +15,7 @@ from manager.models import iptvChannel, iptvGroup, iptvIcon
 
 __playlist_dir__ = f'{settings.STATIC_ROOT}/playlists'
 __upstream_playlist_dir__ = f'{__playlist_dir__}/upstream'
-if not (os.path.isdir(__upstream_playlist_dir__)):
-    if not (os.path.isdir(__playlist_dir__)):
-        os.mkdir(__playlist_dir__)
-    os.mkdir(__upstream_playlist_dir__)
+os.makedirs(__upstream_playlist_dir__, exist_ok=True)
 
 logging.basicConfig(format='%(asctime)s [%(levelname)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
