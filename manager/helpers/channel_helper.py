@@ -137,7 +137,7 @@ channel_name_to_group_category = {
 }
 
 
-class ChannelFactory:
+class GroupCategoryFinder:
     @classmethod
     def default(cls):
         return cls(
@@ -147,12 +147,7 @@ class ChannelFactory:
     def __init__(self, name_mapper):
         self.name_mapper = name_mapper
 
-    def from_m3u_entry(self, entry: dict) -> ChannelHelper:
-        channel = ChannelHelper.from_m3u_entry(entry)
-        channel.group = str(self.find_group_category(channel).name)
-        return channel
-
-    def find_group_category(self, channel: ChannelHelper) -> GroupCategory:
+    def find(self, channel: ChannelHelper) -> GroupCategory:
         if (category := self._match_by_name_exact(channel)) is not None:
             return category
 

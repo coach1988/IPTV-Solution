@@ -1,3 +1,3 @@
 manager/staticfiles/*
-manager/lib/__pycache__*
+manager/helpers/__pycache__*
 *.py[cod]

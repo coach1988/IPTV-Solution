@@ -15,6 +15,6 @@ COPY run.sh /app/run.sh
 COPY iptvmanager/ /app/iptvmanager/
 COPY *.py /app/
 COPY manager/ /app/manager/
-COPY lib/ /app/lib/
+COPY helpers/ /app/lib/
 
 CMD [ "sh", "-c", "/app/run.sh"]

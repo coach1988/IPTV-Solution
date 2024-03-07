@@ -13,7 +13,7 @@ from urllib.parse import urlparse
 from django.conf import settings
 from django.utils import timezone
 from manager.models import iptvChannel, iptvGroup, iptvIcon
-from .channel_helper import ChannelFactory, ChannelHelper
+from .channel_helper import GroupCategoryFinder, ChannelHelper
 
 __playlist_dir__ = f'{settings.STATIC_ROOT}/playlists'
 __upstream_playlist_dir__ = f'{__playlist_dir__}/upstream'
@@ -21,7 +21,7 @@ os.makedirs(__upstream_playlist_dir__, exist_ok=True)
 
 logging.basicConfig(format='%(asctime)s [%(levelname)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
-channel_factory = ChannelFactory.default()
+group_finder = GroupCategoryFinder.default()
 
 
 class UpstreamPlaylistHelper:
@@ -93,7 +93,8 @@ class UpstreamPlaylistHelper:
         parser.parse_m3u(fpath)
 
         for entry in parser.get_list():
-            channel = channel_factory.from_m3u_entry(entry)
+            channel = ChannelHelper.from_m3u_entry(entry)
+            channel.group = group_finder.find(channel).name
             logger.info(f"channel {channel} from entry {entry}")
             yield channel
 
